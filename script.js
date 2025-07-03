@@ -1,101 +1,104 @@
-let boxes = document.querySelectorAll(".box"); // get all boxes
-let resetBtn = document.querySelector("#reset-btn"); // get reset button
-let newGameBtn = document.querySelector("#new-btn"); // get new game button
-let msgContainer = document.querySelector(".msg-container"); // get message container
-let msg = document.querySelector("#msg"); // get message
+let boxes = document.querySelectorAll(".box");
+let resetBtn = document.querySelector("#reset-btn");
+let newGameBtn = document.querySelector("#new-btn");
+let msgContainer = document.querySelector(".msg-container");
+let msg = document.querySelector("#msg");
 
-let turn0 = true; // set turn to player 1
-let count = 0; // set count to 0
+let turn0 = true;
+let count = 0;
 
-const winPatterns = [ // set winning patterns
-    [0,1,2], [0,3,6], [0,4,8], [1,4,7], 
-    [2,5,8], [2,4,6], [3,4,5], [6,7,8],
+const winPatterns = [
+  [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+  [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+  [0, 4, 8], [2, 4, 6],            // diagonals
 ];
 
-const enableBoxes = () => { // enable boxes
-    boxes.forEach(box => {// loop through each box
-        box.disabled = false;// enable box
-        box.innerText = "";// clear box value
-    });
+const enableBoxes = () => {
+  boxes.forEach((box) => {
+    box.disabled = false;
+    box.innerText = "";
+  });
 };
 
-const resetGame = () => { // reset game
-    turn0 = true;//    set turn to player 1
-    count = 0;//    set count to 0
-    enableBoxes();
-    msgContainer.classList.add("hide"); // hide message container
+const resetGame = () => {
+  turn0 = true;
+  count = 0;
+  enableBoxes();
+  msgContainer.classList.add("hide");
 };
 
-const disableBoxes = () => { // disable boxes
-    boxes.forEach(box => box.disabled = true);//    loop through each box and disable
+const disableBoxes = () => {
+  boxes.forEach((box) => box.disabled = true);
 };
 
-const showWinner = (winner) => { // show winner
-    msg.innerText = `Congratulations, Winner is ${winner}`;//   set message
-    msgContainer.classList.remove("hide");//    show message container
-    disableBoxes();//    disable boxes
+const showWinner = (winner) => {
+  msg.innerText = `🎉 Winner: ${winner}`;
+  msgContainer.classList.remove("hide");
+  disableBoxes();
 };
 
-const gameDraw = () => { // handle draw
-    msg.innerText = "It's a Draw!";//    set message
-    msgContainer.classList.remove("hide");//    show message container
-    disableBoxes();//    disable boxes
+const gameDraw = () => {
+  msg.innerText = "It's a Draw!";
+  msgContainer.classList.remove("hide");
+  disableBoxes();
 };
 
-const checkWinner = () => { // check winner
-    for (let pattern of winPatterns) {
-        let pos1Val = boxes[pattern[0]].innerText;
-        let pos2Val = boxes[pattern[1]].innerText;
-        let pos3Val = boxes[pattern[2]].innerText;
-        
-        if (pos1Val !== "" && pos1Val === pos2Val && pos2Val === pos3Val) {
-            showWinner(pos1Val);
-            return true; // Winner found
-        }
+const checkWinner = () => {
+  for (let pattern of winPatterns) {
+    let [a, b, c] = pattern;
+    let val1 = boxes[a].innerText;
+    let val2 = boxes[b].innerText;
+    let val3 = boxes[c].innerText;
+
+    if (val1 !== "" && val1 === val2 && val2 === val3) {
+      showWinner(val1);
+      return true;
     }
-    return false; // No winner found
+  }
+  return false;
 };
 
-const computerMove = () => { // computer move
-    if (turn0) return; // check if it is player 1 turn
+const computerMove = () => {
+  if (turn0) return;
 
-    let emptyBoxes = [];//    create empty boxes array
-    boxes.forEach((box, index) => {
-        if (box.innerText === "") emptyBoxes.push(index);
-    });
+  let emptyBoxes = [];
+  boxes.forEach((box, index) => {
+    if (box.innerText === "") emptyBoxes.push(index);
+  });
 
-    if (emptyBoxes.length > 0) {//    check if there are empty boxes
-        let randomIndex = emptyBoxes[Math.floor(Math.random() * emptyBoxes.length)];
-        boxes[randomIndex].innerText = "X";//    set box value to X
-        boxes[randomIndex].disabled = true;//    disable box
-        turn0 = true;//    set turn to player 1
-        count++;//    increment count by 1
+  if (emptyBoxes.length > 0) {
+    let randomIndex = emptyBoxes[Math.floor(Math.random() * emptyBoxes.length)];
+    boxes[randomIndex].innerText = "X";
+    boxes[randomIndex].disabled = true;
+    turn0 = true;
+    count++;
 
-        if (!checkWinner() && count === 9) {//    check if there is no winner and board is full
-            gameDraw();
-        }
+    if (!checkWinner() && count === 9) {
+      gameDraw();
     }
+  }
 };
 
-boxes.forEach((box) => { // loop through each box and add click event listener
-    box.addEventListener("click", () => {// add click event to each box and set box value
-        if (turn0) {
-            box.innerText = "O";// set box value to O
-            turn0 = false;
-        } else {
-            box.innerText = "X";// set box value to X
-            turn0 = true;
-        }
-        box.disabled = true;
-        count++;
+boxes.forEach((box) => {
+  box.addEventListener("click", () => {
+    if (box.innerText !== "") return; // Prevent overwriting
 
-        if (!checkWinner() && count === 9) {
-            gameDraw(); // Only trigger draw when board is full and no winner
+    if (turn0) {
+      box.innerText = "O";
+      box.disabled = true;
+      turn0 = false;
+      count++;
+
+      if (!checkWinner()) {
+        if (count < 9) {
+          setTimeout(computerMove, 300);
         } else {
-            setTimeout(computerMove, 200); // Call computer move after 500ms
+          gameDraw();
         }
-    });
+      }
+    }
+  });
 });
 
-newGameBtn.addEventListener("click", resetGame);// add click event to new game button
 resetBtn.addEventListener("click", resetGame);
+newGameBtn.addEventListener("click", resetGame);
