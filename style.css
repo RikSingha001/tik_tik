@@ -6,47 +6,59 @@
 
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f6f6f6;
+  background-color: #f0f4f8;
   color: #333;
+  min-height: 100vh;
   padding: 20px;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 h1 {
   font-size: 2.5rem;
   margin-bottom: 20px;
   color: #2c3e50;
+  text-align: center;
 }
 
 .container {
   display: flex;
   justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
 }
 
 .game {
   display: grid;
-  grid-template-columns: repeat(3, 100px);
+  grid-template-columns: repeat(3, minmax(80px, 1fr));
   gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  padding: 10px;
 }
 
 .box {
-  width: 100px;
-  height: 100px;
-  font-size: 2rem;
-  cursor: pointer;
-  background-color: #ecf0f1;
+  width: 100%;
+  aspect-ratio: 1/1;
+  font-size: 2.2rem;
+  font-weight: bold;
+  background-color: #ffffff;
   border: 2px solid #34495e;
   border-radius: 8px;
+  cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .box:hover {
-  background-color: #bdc3c7;
+  background-color: #d0e6f7;
 }
 
 #reset-btn,
 #new-btn {
-  margin-top: 20px;
+  margin-top: 10px;
   padding: 10px 20px;
   font-size: 1rem;
   background-color: #2980b9;
@@ -54,6 +66,7 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 #reset-btn:hover,
@@ -63,14 +76,44 @@ h1 {
 
 .msg-container {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+  padding: 10px 20px;
+  background-color: #ecf0f1;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .msg-container p {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   margin-bottom: 10px;
+  color: #27ae60;
 }
 
 .hide {
   display: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  .game {
+    max-width: 280px;
+  }
+
+  .box {
+    font-size: 1.8rem;
+  }
+
+  #reset-btn,
+  #new-btn {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
+
+  .msg-container p {
+    font-size: 1.2rem;
+  }
 }
